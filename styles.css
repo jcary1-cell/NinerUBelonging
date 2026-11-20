@@ -254,6 +254,10 @@ p { margin: 0 0 1em; }
 .result-summary { font-size: 17px; color: var(--ink-2); }
 .result-summary strong { color: var(--ink); }
 .result-hubs .hub { margin-bottom: 8px; }
+.privacy-note { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-top: 24px; padding: 14px 16px; border-radius: 12px; background: var(--paper); border: 1px dashed var(--line-strong); }
+.privacy-note p { margin: 0; font-size: 14px; color: var(--ink-2); max-width: 52ch; }
+.link-btn { font: inherit; color: var(--link); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.link-btn:hover { text-decoration-thickness: 2px; }
 .result-hubs .mono { color: var(--gold-ink); text-transform: uppercase; display: block; margin: 14px 0 8px; }
 
 /* ----------------------------------------------------------- blueprint svg */
