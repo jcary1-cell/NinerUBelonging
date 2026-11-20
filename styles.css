@@ -296,6 +296,13 @@ p { margin: 0 0 1em; }
 .launch-step.done { border-color: var(--green-3); }
 .launch-step.done .step-n { color: var(--green-3); }
 .launch-step.done .step-n::after { content: " ✓"; }
+.sub-steps { list-style: none; counter-reset: sub; padding: 0; margin: 4px 0 16px; max-width: 62ch; display: grid; gap: 10px; color: var(--ink-2); }
+.sub-steps li { counter-increment: sub; position: relative; padding: 0 0 10px 34px; border-bottom: 1px solid var(--line); }
+.sub-steps li:last-child { border-bottom: 0; padding-bottom: 0; }
+.sub-steps li::before { content: counter(sub, lower-alpha) "."; position: absolute; left: 0; top: .2em; font: 500 13px var(--mono); color: var(--gold-ink); }
+.sub-steps kbd { font-size: 14px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sub-steps li::before { color: var(--gold); } }
+:root[data-theme="dark"] .sub-steps li::before { color: var(--gold); }
 .launch-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 14px; }
 .tip { margin: 6px 0 14px; font-size: 15px; }
 .tip summary { cursor: pointer; font-weight: 600; color: var(--link); }
