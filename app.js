@@ -360,7 +360,7 @@
     $("#openSkill").disabled = !accountConfirmed;
     $("#stepSignin").classList.toggle("done", accountConfirmed);
     $("#openNote").textContent = accountConfirmed
-      ? "Your message gets copied, then the coach opens in a new tab. Paste it there and send."
+      ? "Your message gets copied, then the coach opens in a new tab. Pick ⋮ → Use skill now, then paste and send."
       : "Check the box in step 1 first.";
   }
 
@@ -384,7 +384,7 @@
     const w = window.open(SKILL_URL, "_blank");
     if (w) { try { w.opener = null; } catch { /* ignore */ } }
     else location.href = SKILL_URL; // popup blocked: go in this tab
-    toast(copied ? "Copied! Paste it into Gemini to start." : "Opening the coach. Copy your message from step 2 if it didn't paste.");
+    toast(copied ? "Copied! In Gemini, pick ⋮ → Use skill now, then paste." : "Opening the coach. Pick ⋮ → Use skill now, then copy your message from step 2.");
   }
 
   function renderStarters() {
