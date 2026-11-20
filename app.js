@@ -92,11 +92,22 @@
   ];
 
   // ----------------------------------------------------------------- store
+  // Check-ins live only in this browser tab (sessionStorage), so they're gone when the tab closes.
+  // Shared or lab computers never keep a student's answers for the next person.
   const store = {
-    get(k, fallback) { try { const v = localStorage.getItem("nineru." + k); return v ? JSON.parse(v) : fallback; } catch { return fallback; } },
-    set(k, v) { try { localStorage.setItem("nineru." + k, JSON.stringify(v)); } catch { /* private mode */ } },
-    del(k) { try { localStorage.removeItem("nineru." + k); } catch { /* ignore */ } },
+    get(k, fallback) { try { const v = sessionStorage.getItem("nineru." + k); return v ? JSON.parse(v) : fallback; } catch { return fallback; } },
+    set(k, v) { try { sessionStorage.setItem("nineru." + k, JSON.stringify(v)); } catch { /* private mode */ } },
+    del(k) { try { sessionStorage.removeItem("nineru." + k); } catch { /* ignore */ } },
   };
+  // Older versions kept check-ins in localStorage indefinitely. Wipe anything they left behind.
+  try { ["checkin", "checkins"].forEach((k) => localStorage.removeItem("nineru." + k)); } catch { /* ignore */ }
+
+  function clearMyInfo() {
+    store.del("checkin");
+    $("#checkinForm").reset();
+    location.hash = "#/checkin";
+    location.reload();
+  }
 
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -290,7 +301,6 @@
         at: new Date().toISOString(),
       };
       store.set("checkin", checkin);
-      const hist = store.get("checkins", []); hist.push({ at: checkin.at, scores: checkin.scores, stage: checkin.stage }); store.set("checkins", hist.slice(-12));
     }
     if (s === 4) { pendingAsk = null; location.hash = "#/start"; return; }
     setStep(s + 1);
@@ -350,7 +360,7 @@
         ? "Your check-in results get copied for you, so your coach can skip the intro questions and get right to it."
         : "Here's how you'll start the conversation. It gets copied for you, so you can just paste it into Gemini.";
     $("#openerHint").innerHTML = checkin || pendingAsk
-      ? `Want to start differently? <a href="#/checkin">Retake the check-in</a> or pick a question below.`
+      ? `Want to start differently? <a href="#/checkin">Retake the check-in</a> or pick a question below.${checkin ? ` Done for now? <button type="button" class="link-btn" data-clear>Clear my info</button>.` : ""}`
       : `Tip: <a href="#/checkin">take the 2-minute check-in</a> first so your coach knows where you're starting.`;
     $("#confirmAccount").checked = accountConfirmed;
     syncLaunch();
@@ -403,6 +413,7 @@
     $("#copyOpener").addEventListener("click", async () => toast((await copyText(currentOpener())) ? "Copied." : "Couldn't copy. Select the text and copy it yourself."));
 
     document.addEventListener("click", (e) => {
+      if (e.target.closest("[data-clear]")) { clearMyInfo(); return; }
       const s = e.target.closest("[data-send]");
       if (s) { copyAndOpen(s.dataset.send); return; }
       const a = e.target.closest("[data-ask]");
